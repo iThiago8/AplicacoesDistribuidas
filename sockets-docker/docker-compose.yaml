@@ -1,0 +1,30 @@
+services:
+  servidor:
+    build: .
+    container_name: ad-servidor
+    command: sleep infinity
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./src:/app
+      - ./captures:/captures
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    networks:
+      - ad-network
+
+  cliente:
+    build: .
+    container_name: ad-cliente
+    command: sleep infinity
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./src:/app
+    networks:
+      - ad-network
+
+networks:
+  ad-network:
+    driver: bridge
