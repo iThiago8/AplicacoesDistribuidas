@@ -103,4 +103,96 @@ falhas, validação e ausência da chave nas respostas. Antes de um commit,
 confira `git status --short` e `git diff --cached`: `.env` não deve aparecer,
 e a chave não deve estar em nenhum arquivo preparado para publicação.
 
-As etapas SOAP PHP e SOAP Java ainda não foram implementadas.
+## SOAP — PHP e Java
+
+`soap-pedidos-php` contém o contrato `pedido.wsdl`, o servidor, o cliente PHP
+e o inicializador para Linux. `soap-pedidos-java` contém o cliente Maven/CXF
+e uma cópia idêntica do contrato. O contrato usa SOAP 1.1, estilo RPC/literal.
+Os pedidos ficam em memória; não é necessário banco de dados ou chave de API.
+
+A porta padrão é **8002**, para evitar conflitos com as aplicações anteriores.
+
+### Executar PHP no Linux
+
+Requer PHP com as extensões `soap` e `dom`. Confira com `php -m`.
+Para localizar a configuração do PHP, execute `php --ini`. Em instalações
+que disponibilizam SOAP como extensão compartilhada, habilite `extension=soap`
+no `php.ini` indicado. O inicializador informa se SOAP não estiver habilitado.
+
+Terminal 1, na raiz do repositório:
+
+```bash
+cd atividade-02-11-apis/soap-pedidos-php
+php iniciar-servidor.php
+```
+
+Terminal 2, na mesma pasta:
+
+```bash
+php cliente.php
+php cliente.php PED-1002
+php cliente.php PED-9999
+```
+
+O primeiro retorna Ana Souza, Em separação, R$ 159.90. O segundo retorna
+Carlos Lima, Enviado, R$ 89.50. O terceiro exibe um `SoapFault` de pedido
+inexistente e termina com código 1. O cliente imprime os envelopes XML de
+requisição e resposta, inclusive nas falhas. Encerre o servidor com Ctrl+C.
+
+Para outra porta, use `php iniciar-servidor.php 8003` e execute os clientes
+com `SOAP_ENDPOINT=http://127.0.0.1:8003/servidor.php` antes do comando.
+A opção de endereço do cliente substitui o endereço padrão do WSDL.
+
+### Executar o cliente Java
+
+Requer JDK 17 ou superior e Maven. Mantenha o servidor PHP aberto e, em outro
+terminal, a partir da raiz do repositório:
+
+```bash
+cd atividade-02-11-apis/soap-pedidos-java
+mvn compile exec:java
+mvn compile exec:java -Dexec.args=PED-1002
+mvn compile exec:java -Dexec.args=PED-9999
+```
+
+O Maven gera `Pedido`, `PedidoService`, `PedidoPortType` e auxiliares a partir
+do WSDL em `target/generated-sources/cxf`. As classes geradas não precisam
+ser escritas manualmente ou versionadas. O cliente consulta o mesmo servidor
+PHP e trata falhas SOAP para o pedido inexistente (código de saída 1).
+Também é possível importar o `pom.xml` no IntelliJ, executar `compile` no Maven
+e iniciar `ClientePedido.main()` pela IDE.
+
+Se alterar o contrato PHP, atualize também a cópia em
+`soap-pedidos-java/src/main/resources/wsdl/pedido.wsdl` e rode `mvn clean compile`.
+
+### Alternativa com Docker (sem PHP/JDK/Maven no sistema)
+
+Na raiz do repositório, construa a imagem e mantenha o servidor aberto:
+
+```bash
+docker build -t atividade-apis-soap-php atividade-02-11-apis/soap-pedidos-php
+docker run --rm --name atividade-apis-soap -p 127.0.0.1:8002:8002 atividade-apis-soap-php
+```
+
+Em outro terminal, execute o cliente PHP no mesmo contêiner:
+
+```bash
+docker exec atividade-apis-soap php cliente.php
+docker exec atividade-apis-soap php cliente.php PED-9999
+```
+
+Para o cliente Java no Linux, na raiz do repositório:
+
+```bash
+docker run --rm --network host --user "$(id -u):$(id -g)" \
+  -e MAVEN_CONFIG=/tmp/.m2 \
+  -e MAVEN_OPTS=-Duser.home=/tmp \
+  -v "$PWD/atividade-02-11-apis/soap-pedidos-java:/projeto" -w /projeto \
+  maven:3.9-eclipse-temurin-17 \
+  mvn -Dmaven.repo.local=/projeto/.m2 compile exec:java
+```
+
+Adicione `-Dexec.args=PED-9999` ao comando Maven para conferir o Fault no Java.
+Os downloads iniciais precisam de internet. O cache `.m2` e `target` são
+ignorados pelo Git. As duas linguagens devem retornar os mesmos dados para
+o mesmo pedido, demonstrando a interoperabilidade por WSDL e XML/HTTP.

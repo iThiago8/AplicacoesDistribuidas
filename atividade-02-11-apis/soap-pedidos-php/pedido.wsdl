@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://exemplo.com/pedidos" name="PedidoService" targetNamespace="http://exemplo.com/pedidos">
+    <wsdl:types>
+        <xsd:schema targetNamespace="http://exemplo.com/pedidos" elementFormDefault="qualified">
+            <xsd:complexType name="Pedido">
+                <xsd:sequence>
+                    <xsd:element name="numero" type="xsd:string"/>
+                    <xsd:element name="cliente" type="xsd:string"/>
+                    <xsd:element name="status" type="xsd:string"/>
+                    <xsd:element name="valorTotal" type="xsd:decimal"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="ConsultarPedidoRequest">
+        <wsdl:part name="numeroPedido" type="xsd:string"/>
+    </wsdl:message>
+    <wsdl:message name="ConsultarPedidoResponse">
+        <wsdl:part name="return" type="tns:Pedido"/>
+    </wsdl:message>
+    <wsdl:portType name="PedidoPortType">
+        <wsdl:operation name="consultarPedido">
+            <wsdl:input message="tns:ConsultarPedidoRequest"/>
+            <wsdl:output message="tns:ConsultarPedidoResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="PedidoSoapBinding" type="tns:PedidoPortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="consultarPedido">
+            <soap:operation soapAction="http://exemplo.com/pedidos/consultarPedido"/>
+            <wsdl:input>
+                <soap:body use="literal" namespace="http://exemplo.com/pedidos"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" namespace="http://exemplo.com/pedidos"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="PedidoService">
+        <wsdl:port name="PedidoPort" binding="tns:PedidoSoapBinding">
+            <soap:address location="http://127.0.0.1:8002/servidor.php"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
