@@ -67,10 +67,10 @@ referenciador de navegador não serve para as chamadas do FastAPI.
 Inicie o backend no mesmo terminal:
 
 ```bash
-uvicorn app:app --reload
+uvicorn app:app --reload --port 8001
 ```
 
-Documentação interativa: http://localhost:8000/docs. Sem chave, o servidor
+Documentação interativa: http://localhost:8001/docs. Sem chave, o servidor
 inicia, mas os endpoints de consulta retornam uma mensagem de configuração.
 Reinicie o servidor após alterar o `.env`.
 
@@ -88,7 +88,7 @@ Se a v4 ainda estiver servindo nessa porta, encerre seu servidor primeiro.
 
 Confira seleção de canal, pesquisa, carregamento de mais vídeos e modal.
 Na aba Network do navegador, as consultas de dados devem ir para
-`localhost:8000/api/...`, sem chave nos parâmetros ou respostas. As imagens
+`localhost:8001/api/...`, sem chave nos parâmetros ou respostas. As imagens
 e o player continuam sendo carregados dos serviços do YouTube.
 Faça uma pesquisa e insira o print no documento da atividade.
 
