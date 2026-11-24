@@ -1,4 +1,4 @@
-´# Atividade 16/11 — Biblioteca distribuída (versão 9)
+# Atividade 16/11 — Biblioteca distribuída (versão 9)
 
 **Integrantes:** Gabriel Ceron Bianchi e Thiago Pedro Padilha.
 
