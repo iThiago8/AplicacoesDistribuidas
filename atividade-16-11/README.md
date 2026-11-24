@@ -8,8 +8,7 @@
 Implementação baseada no roteiro **Estudo de Caso - Sistema Distribuído.pdf**,
 seção **4.9 — versão 9**. A alternativa escolhida mantém **Python, FastAPI,
 Streamlit, SQLModel e SQLite**, mas substitui o modelo de vendas por um
-**catálogo de biblioteca**. O arquivo `GabrielCeronEThiagoPadilhaAvaliacaoParcial.pdf`
-é o questionário teórico da disciplina; o roteiro de código está no outro PDF.
+**catálogo de biblioteca**.
 
 ## Cenário e funcionalidades
 
