@@ -1,0 +1,2 @@
+# Resolve os módulos locais da mesma forma ao executar pela raiz ou pela atividade.
+src = ["."]

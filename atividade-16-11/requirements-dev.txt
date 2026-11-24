@@ -1,0 +1,6 @@
+-r requirements.txt
+httpx>=0.27,<1
+pytest>=8,<10
+types-requests>=2.33,<3
+mypy==2.4.1
+ruff==0.17.6
