@@ -1,0 +1,39 @@
+services:
+  graphql:
+    build: ./graphql-pedidos-php
+    ports:
+      - "127.0.0.1:8082:8082"
+    environment:
+      PEDIDOS_ARQUIVO: /data/pedidos.json
+    volumes:
+      - pedidos-graphql:/data
+
+  grpc:
+    image: maven:3.9-eclipse-temurin-17
+    user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
+    working_dir: /projeto
+    environment:
+      MAVEN_CONFIG: /tmp/.m2
+      MAVEN_OPTS: -Duser.home=/tmp
+    volumes:
+      - ./soap-pedidos-java:/projeto
+    ports:
+      - "127.0.0.1:50051:50051"
+    command: ["mvn", "-B", "-Dmaven.repo.local=/projeto/.m2", "compile", "exec:java", "-Dexec.mainClass=com.exemplo.pedidos.grpc.ServidorPedido"]
+
+  java:
+    image: maven:3.9-eclipse-temurin-17
+    profiles: ["clientes"]
+    user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
+    working_dir: /projeto
+    environment:
+      MAVEN_CONFIG: /tmp/.m2
+      MAVEN_OPTS: -Duser.home=/tmp
+      GRAPHQL_ENDPOINT: http://graphql:8082/graphql
+      GRPC_HOST: grpc
+    volumes:
+      - ./soap-pedidos-java:/projeto
+    entrypoint: ["mvn", "-B", "-Dmaven.repo.local=/projeto/.m2"]
+
+volumes:
+  pedidos-graphql:

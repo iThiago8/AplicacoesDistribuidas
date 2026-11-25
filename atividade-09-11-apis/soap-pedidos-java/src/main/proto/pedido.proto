@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package pedidos;
+option java_package = "com.exemplo.pedidos.grpc";
+option java_multiple_files = true;
+
+service PedidoService {
+  rpc ConsultarPedido (ConsultarPedidoRequest) returns (Pedido);
+}
+
+message ConsultarPedidoRequest {
+  string numero_pedido = 1;
+}
+
+message Pedido {
+  string numero = 1;
+  string cliente = 2;
+  string status = 3;
+  double valor_total = 4;
+}

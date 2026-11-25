@@ -1,0 +1,10 @@
+{
+    "name": "atividade-apis/graphql-pedidos-php",
+    "description": "Pedidos via GraphQL conforme o roteiro APIs.docx",
+    "type": "project",
+    "require": {
+        "php": "^8.3",
+        "ext-mbstring": "*",
+        "webonyx/graphql-php": "^15.0"
+    }
+}
